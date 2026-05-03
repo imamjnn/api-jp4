@@ -25,10 +25,10 @@ export const getExpenses = async (req, res) => {
       .leftJoin(users, eq(expenses.createdBy, users.id))
       .orderBy(expenses.date);
 
-    res.json({status: 1, data: rows});
+    res.json({success: true, message: 'OK', data: rows});
   } catch (err) {
     console.error(err);
-    res.status(500).json({status: 0, message: 'Internal server error'});
+    res.status(500).json({success: false, message: 'Internal server error'});
   }
 };
 
@@ -58,7 +58,7 @@ export const getExpenseById = async (req, res) => {
       .where(eq(expenses.id, Number(id)));
 
     if (!expense) {
-      return res.status(404).json({status: 0, message: 'Expense not found'});
+      return res.status(404).json({success: false, message: 'Expense not found'});
     }
 
     const details = await db
@@ -66,9 +66,9 @@ export const getExpenseById = async (req, res) => {
       .from(expenseDetails)
       .where(eq(expenseDetails.expenseId, Number(id)));
 
-    res.json({status: 1, data: {...expense, details}});
+    res.json({success: true, message: 'OK', data: {...expense, details}});
   } catch (err) {
     console.error(err);
-    res.status(500).json({status: 0, message: 'Internal server error'});
+    res.status(500).json({success: false, message: 'Internal server error'});
   }
 };
