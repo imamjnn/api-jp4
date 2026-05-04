@@ -7,6 +7,7 @@ import {
   createExpense,
   updateExpense,
   deleteExpense,
+  getExpenseSummary,
 } from './controllers/expenses';
 import {login, logout, refresh, me} from './controllers/auth';
 import {authenticate} from './middlewares/authenticate';
@@ -39,6 +40,7 @@ router.post('/auth/logout', logout);
 router.get('/auth/me', authenticate, me);
 
 // Expenses (protected)
+router.get('/expenses/summary', authenticate, getExpenseSummary);
 router.get('/expenses', authenticate, getExpenses);
 router.get('/expenses/:id', authenticate, getExpenseById);
 router.post('/expenses', authenticate, createExpense);
