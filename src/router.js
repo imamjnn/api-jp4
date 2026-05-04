@@ -10,11 +10,27 @@ import {
 } from './controllers/expenses';
 import {login, logout, refresh, me} from './controllers/auth';
 import {authenticate} from './middlewares/authenticate';
+import {pool} from './db';
 
 const router = express.Router();
 
 router.get('/', main);
 router.get('/example', example);
+
+// DB health check
+router.get('/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({success: true, message: 'Database connected'});
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'Database connection failed',
+      error: err.message,
+      url: process.env.BASE_URL || 'Not set',
+    });
+  }
+});
 
 // Auth
 router.post('/auth/login', login);
