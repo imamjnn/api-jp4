@@ -1,6 +1,6 @@
 import {db} from '../../db';
 import {expenses, expenseCategories, users} from '../../db/schema';
-import {eq, count, and, gte, lte} from 'drizzle-orm';
+import {eq, count, sum, and, gte, lte} from 'drizzle-orm';
 
 export const getExpenses = async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
@@ -27,7 +27,10 @@ export const getExpenses = async (req, res) => {
 
   try {
     const [totalResult, rows] = await Promise.all([
-      db.select({total: count()}).from(expenses).where(where),
+      db
+        .select({total: count(), totalAmount: sum(expenses.totalAmount)})
+        .from(expenses)
+        .where(where),
       db
         .select({
           id: expenses.id,
@@ -60,6 +63,8 @@ export const getExpenses = async (req, res) => {
       success: true,
       message: 'OK',
       data: rows,
+      totalAmount: Number(totalResult[0].totalAmount) || 0,
+      totalTransactions: Number(total) || 0,
       pagination: {
         page,
         limit,
