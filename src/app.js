@@ -24,8 +24,17 @@ app.use(compression());
 app.use(limiter);
 app.disable('x-powered-by');
 app.use(helmet());
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'https://konveksi.jayaputra4.com'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
+app.options('*', cors());
 app.use(bodyParser.json());
-app.use(cors());
 app.use(router);
 
 // custom 404
