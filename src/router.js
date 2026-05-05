@@ -12,6 +12,13 @@ import {
 import {login, logout, refresh, me} from './controllers/auth';
 import {authenticate} from './middlewares/authenticate';
 import {pool} from './db';
+import {
+  getCategories,
+  getCategoryById,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from './controllers/expenseCategories';
 
 const router = express.Router();
 
@@ -38,6 +45,13 @@ router.post('/auth/login', login);
 router.post('/auth/refresh', refresh);
 router.post('/auth/logout', logout);
 router.get('/auth/me', authenticate, me);
+
+// Expense Categories (protected)
+router.get('/expense-categories', authenticate, getCategories);
+router.get('/expense-categories/:id', authenticate, getCategoryById);
+router.post('/expense-categories', authenticate, createCategory);
+router.put('/expense-categories/:id', authenticate, updateCategory);
+router.delete('/expense-categories/:id', authenticate, deleteCategory);
 
 // Expenses (protected)
 router.get('/expenses/summary', authenticate, getExpenseSummary);
