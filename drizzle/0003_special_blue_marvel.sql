@@ -1,0 +1,1 @@
+ALTER TABLE "item_rates" ADD COLUMN "created_at" timestamp DEFAULT now();

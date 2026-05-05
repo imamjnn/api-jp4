@@ -19,6 +19,21 @@ import {
   updateCategory,
   deleteCategory,
 } from './controllers/expenseCategories';
+import {
+  getMembers,
+  getMemberById,
+  createMember,
+  updateMember,
+  deleteMember,
+} from './controllers/members';
+import {
+  getItems,
+  getItemById,
+  createItem,
+  updateItem,
+  deleteItem,
+  addStock,
+} from './controllers/items';
 
 const router = express.Router();
 
@@ -52,6 +67,21 @@ router.get('/expense-categories/:id', authenticate, getCategoryById);
 router.post('/expense-categories', authenticate, createCategory);
 router.put('/expense-categories/:id', authenticate, updateCategory);
 router.delete('/expense-categories/:id', authenticate, deleteCategory);
+
+// Members (protected)
+router.get('/members', authenticate, getMembers);
+router.get('/members/:id', authenticate, getMemberById);
+router.post('/members', authenticate, createMember);
+router.put('/members/:id', authenticate, updateMember);
+router.delete('/members/:id', authenticate, deleteMember);
+
+// Items (protected)
+router.get('/items', authenticate, getItems);
+router.get('/items/:id', authenticate, getItemById);
+router.post('/items', authenticate, createItem);
+router.put('/items/:id', authenticate, updateItem);
+router.delete('/items/:id', authenticate, deleteItem);
+router.post('/items/:id/stock', authenticate, addStock);
 
 // Expenses (protected)
 router.get('/expenses/summary', authenticate, getExpenseSummary);

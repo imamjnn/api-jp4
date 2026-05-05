@@ -68,3 +68,87 @@ export const expenseDetails = pgTable('expense_details', {
   price: integer('price'),
   subtotal: integer('subtotal'),
 });
+
+// ITEMS
+export const items = pgTable('items', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(), // lengan, badan, dll
+  unit: text('unit').notNull(), // pcs
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// ITEM RATES
+export const itemRates = pgTable('item_rates', {
+  id: serial('id').primaryKey(),
+  itemId: integer('item_id')
+    .references(() => items.id)
+    .notNull(),
+  rate: integer('rate').notNull(), // 2000 / pcs
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// ITEM STOCKS
+export const itemStocks = pgTable('item_stocks', {
+  id: serial('id').primaryKey(),
+  itemId: integer('item_id')
+    .references(() => items.id)
+    .notNull(),
+  type: text('type', {enum: ['in', 'out']}).notNull(),
+  qty: integer('qty').notNull(),
+  note: text('note'),
+  refType: text('ref_type'), // 'manual' | 'voucher'
+  refId: integer('ref_id'), // voucherId jika refType = 'voucher'
+  createdBy: integer('created_by').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// MEMBERS
+export const members = pgTable('members', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  phone: text('phone'),
+  address: text('address'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// VOUCHERS
+export const vouchers = pgTable('vouchers', {
+  id: serial('id').primaryKey(),
+  memberId: integer('member_id')
+    .references(() => members.id)
+    .notNull(),
+  status: text('status', {
+    enum: ['on_process', 'claimed', 'paid'],
+  }).default('on_process'),
+  totalQty: integer('total_qty').default(0),
+  totalAmount: integer('total_amount').default(0),
+  createdAt: timestamp('created_at').defaultNow(),
+  completedAt: timestamp('completed_at'),
+});
+
+// VOUCHER DETAILS
+export const voucherDetails = pgTable('voucher_details', {
+  id: serial('id').primaryKey(),
+  voucherId: integer('voucher_id')
+    .references(() => vouchers.id)
+    .notNull(),
+  itemId: integer('item_id')
+    .references(() => items.id)
+    .notNull(),
+  qty: integer('qty').notNull(),
+  rate: integer('rate').notNull(), // snapshot
+  subtotal: integer('subtotal').notNull(), // qty * rate
+  rejectedQty: integer('rejected_qty').default(0),
+  rejectNote: text('reject_note'),
+});
+
+// PAYOUTS
+export const payouts = pgTable('payouts', {
+  id: serial('id').primaryKey(),
+  voucherId: integer('voucher_id')
+    .references(() => vouchers.id)
+    .notNull()
+    .unique(),
+  amount: integer('amount').notNull(),
+  paidAt: timestamp('paid_at').defaultNow(),
+});
