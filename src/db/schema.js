@@ -114,6 +114,7 @@ export const members = pgTable('members', {
 // VOUCHERS
 export const vouchers = pgTable('vouchers', {
   id: serial('id').primaryKey(),
+  code: text('code').notNull().unique(),
   memberId: integer('member_id')
     .references(() => members.id)
     .notNull(),

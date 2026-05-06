@@ -34,6 +34,14 @@ import {
   deleteItem,
   addStock,
 } from './controllers/items';
+import {
+  getVouchers,
+  getVoucherById,
+  createVoucher,
+  claimVoucher,
+  payVoucher,
+  deleteVoucher,
+} from './controllers/vouchers';
 
 const router = express.Router();
 
@@ -82,6 +90,14 @@ router.post('/items', authenticate, createItem);
 router.put('/items/:id', authenticate, updateItem);
 router.delete('/items/:id', authenticate, deleteItem);
 router.post('/items/:id/stock', authenticate, addStock);
+
+// Vouchers (protected)
+router.get('/vouchers', authenticate, getVouchers);
+router.get('/vouchers/:id', authenticate, getVoucherById);
+router.post('/vouchers', authenticate, createVoucher);
+router.put('/vouchers/:id/claim', authenticate, claimVoucher);
+router.put('/vouchers/:id/pay', authenticate, payVoucher);
+router.delete('/vouchers/:id', authenticate, deleteVoucher);
 
 // Expenses (protected)
 router.get('/expenses/summary', authenticate, getExpenseSummary);
