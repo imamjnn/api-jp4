@@ -42,6 +42,7 @@ import {
   payVoucher,
   deleteVoucher,
 } from './controllers/vouchers';
+import {getReportSummary} from './controllers/report/getSummary';
 
 const router = express.Router();
 
@@ -98,6 +99,9 @@ router.post('/vouchers', authenticate, createVoucher);
 router.put('/vouchers/:id/claim', authenticate, claimVoucher);
 router.put('/vouchers/:id/pay', authenticate, payVoucher);
 router.delete('/vouchers/:id', authenticate, deleteVoucher);
+
+// Report
+router.get('/report/summary', authenticate, getReportSummary);
 
 // Expenses (protected)
 router.get('/expenses/summary', authenticate, getExpenseSummary);
